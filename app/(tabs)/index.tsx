@@ -1,20 +1,19 @@
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import {ThemedText} from '@/components/ThemedText';
+import {ThemedView} from '@/components/ThemedView';
 import styles from '@/constants/style';
-import { Ionicons } from '@expo/vector-icons';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { BlurView } from 'expo-blur';
+import {Ionicons} from '@expo/vector-icons';
+import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
+import {BlurView} from 'expo-blur';
 import * as DocumentPicker from 'expo-document-picker';
 import * as Haptics from 'expo-haptics';
-// import { Image } from 'expo-image';
+import {Image} from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
-import { useEffect, useRef, useState } from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {
     Alert,
     Animated,
     Dimensions,
     FlatList,
-    Image,
     KeyboardAvoidingView,
     Modal,
     Platform,
@@ -199,7 +198,7 @@ export default function ChatScreen() {
         });
         await handleFileSelection(result, 'image');
     };
-
+    
     /**
      * 갤러리에서 이미지를 선택하는 함수
      * 첨부 모달을 닫고 이미지 라이브러리를 실행합니다
@@ -329,7 +328,8 @@ export default function ChatScreen() {
                                 <ThemedView style={{flex: 1}}>
                                     <View style={styles.menuHeaderContainer}>
                                         <View style={styles.logo}>
-                                            <Image style={styles.logoSize} source={require('@/assets/images/icon.png')} />
+                                            <Image style={styles.logoSize}
+                                                   source={require('@/assets/images/icon.png')}/>
                                         </View>
                                         <ThemedText style={styles.menuHeaderTitle}>Verdora</ThemedText>
                                     </View>
@@ -413,7 +413,7 @@ export default function ChatScreen() {
                 <View style={styles.aiProfileContainer}>
                     <View style={styles.profileImageContainer}>
                         <View style={styles.profileImagePlaceholder}>
-                            <Image style={styles.logoSize} source={require('@/assets/images/icon.png')} />
+                            <Image style={styles.logoSize} source={require('@/assets/images/icon.png')}/>
 
                         </View>
                     </View>
@@ -454,7 +454,7 @@ export default function ChatScreen() {
                 <View style={styles.headerContent}>
                     <View style={styles.logoContainer}>
                         <View style={styles.logo}>
-                            <Image style={styles.logoSize} source={require('@/assets/images/icon.png')} />
+                            <Image style={styles.logoSize} source={require('@/assets/images/icon.png')}/>
 
                         </View>
                         <ThemedText style={styles.appName}>Verdora</ThemedText>
