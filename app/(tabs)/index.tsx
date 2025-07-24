@@ -69,6 +69,10 @@ export default function ChatScreen() {
     const [isMenuVisible, setMenuVisible] = useState(false);
     const slideAnim = useRef(new Animated.Value(SCREEN_WIDTH)).current;
 
+    /**
+     * 사이드 메뉴를 여는 함수
+     * 메뉴 표시 상태를 true로 설정하고 슬라이드 애니메이션을 실행합니다
+     */
     const openMenu = () => {
         setMenuVisible(true);
         Animated.timing(slideAnim, {
@@ -78,6 +82,10 @@ export default function ChatScreen() {
         }).start();
     };
 
+    /**
+     * 사이드 메뉴를 닫는 함수
+     * 슬라이드 애니메이션 후 메뉴 표시 상태를 false로 설정합니다
+     */
     const closeMenu = () => {
         Animated.timing(slideAnim, {
             toValue: SCREEN_WIDTH,
@@ -86,6 +94,12 @@ export default function ChatScreen() {
         }).start(() => setMenuVisible(false));
     };
 
+    /**
+     * Verdora AI의 응답을 생성하는 함수
+     * @param msg - 사용자 메시지
+     * @param hasFile - 파일 첨부 여부
+     * @returns 생성된 응답 문자열
+     */
     const getVerdoraResponse = (msg: string, hasFile = false): string => {
         if (hasFile) {
             const fileResponses = [
@@ -111,6 +125,10 @@ export default function ChatScreen() {
         return responses[Math.floor(Math.random() * responses.length)];
     };
 
+    /**
+     * 메시지를 전송하는 함수
+     * 사용자 메시지를 추가하고 1초 후 AI 응답을 생성합니다
+     */
     const sendMessage = async () => {
         if (inputText.trim() || attachedFile) {
             await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -145,6 +163,11 @@ export default function ChatScreen() {
         }
     };
 
+    /**
+     * 파일 선택 결과를 처리하는 함수
+     * @param result - ImagePicker 또는 DocumentPicker의 결과
+     * @param type - 파일 타입 ('image' 또는 'document')
+     */
     const handleFileSelection = async (result: any, type: 'image' | 'document') => {
         if (!result.canceled && result.assets?.length) {
             const asset = result.assets[0];
@@ -163,6 +186,10 @@ export default function ChatScreen() {
         }
     };
 
+    /**
+     * 카메라로 사진을 촬영하는 함수
+     * 첨부 모달을 닫고 카메라를 실행합니다
+     */
     const pickCamera = async () => {
         setAttachmentModalVisible(false);
         const result = await ImagePicker.launchCameraAsync({
@@ -172,6 +199,10 @@ export default function ChatScreen() {
         await handleFileSelection(result, 'image');
     };
 
+    /**
+     * 갤러리에서 이미지를 선택하는 함수
+     * 첨부 모달을 닫고 이미지 라이브러리를 실행합니다
+     */
     const pickGallery = async () => {
         setAttachmentModalVisible(false);
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -181,17 +212,30 @@ export default function ChatScreen() {
         await handleFileSelection(result, 'image');
     };
 
+    /**
+     * 문서 파일을 선택하는 함수
+     * 첨부 모달을 닫고 문서 선택기를 실행합니다
+     */
     const pickDocument = async () => {
         setAttachmentModalVisible(false);
         const result = await DocumentPicker.getDocumentAsync({copyToCacheDirectory: true});
         await handleFileSelection(result, 'document');
     };
 
+    /**
+     * 첨부된 파일을 제거하는 함수
+     * 햅틱 피드백과 함께 첨부 파일을 null로 설정합니다
+     */
     const removeFile = async () => {
         await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         setAttachedFile(null);
     };
 
+    /**
+     * 파일 크기를 사람이 읽기 쉬운 형태로 변환하는 함수
+     * @param bytes - 바이트 단위의 파일 크기
+     * @returns 변환된 크기 문자열 (예: "1.5 MB")
+     */
     const formatSize = (bytes: number): string => {
         if (!bytes) return '0 Bytes';
         const k = 1024, sizes = ['Bytes', 'KB', 'MB', 'GB'];
@@ -199,16 +243,28 @@ export default function ChatScreen() {
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     };
 
+    /**
+     * 앱 사용법 가이드를 표시하는 함수
+     * 햅틱 피드백과 함께 사용법 알림을 표시합니다
+     */
     const showGuide = async () => {
         await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         Alert.alert('사용법', '• Verdora와 자유롭게 대화하세요\n• 질문을 입력하고 전송 버튼을 누르세요\n• + 버튼으로 파일을 첨부할 수 있습니다\n• AI가 자동으로 응답해드립니다', [{text: '확인'}]);
     };
 
+    /**
+     * 메뉴 버튼 클릭을 처리하는 함수
+     * 햅틱 피드백과 함께 메뉴를 엽니다
+     */
     const handleMenuPress = async () => {
         await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         openMenu();
     };
 
+    /**
+     * 메뉴 항목 클릭을 처리하는 함수
+     * @param key - 클릭된 메뉴 항목의 키
+     */
     const handleMenuItemPress = (key: string) => {
         closeMenu();
         setTimeout(() => {
@@ -252,6 +308,10 @@ export default function ChatScreen() {
         }, 250);
     };
 
+    /**
+     * 사이드 메뉴를 렌더링하는 함수
+     * @returns 사이드 메뉴 JSX 컴포넌트
+     */
     const renderSideMenu = () => {
         const menuItems = [
             {key: 'country', icon: 'globe-outline', text: '나라 설정'},
@@ -300,6 +360,12 @@ export default function ChatScreen() {
         );
     };
 
+    /**
+     * 첨부된 파일을 렌더링하는 함수
+     * @param file - 렌더링할 첨부 파일 객체
+     * @param inMsg - 메시지 내부에서 렌더링되는지 여부 (기본값: false)
+     * @returns 첨부 파일 JSX 컴포넌트
+     */
     const renderAttachedFile = (file: AttachedFile, inMsg = false) => (
         <View style={[styles.attachedFileContainer, inMsg && styles.attachedFileInMessage]}>
             {file.type === 'image' ? (
@@ -332,6 +398,11 @@ export default function ChatScreen() {
         </View>
     );
 
+    /**
+     * 개별 메시지를 렌더링하는 함수
+     * @param item - 렌더링할 메시지 객체
+     * @returns 메시지 JSX 컴포넌트
+     */
     const renderMessage = ({item}: { item: Message }) => (
         <View style={[
             styles.messageWrapper,
