@@ -1,8 +1,9 @@
-import {Dimensions, Platform, StyleSheet} from 'react-native';
+import { Dimensions, Platform, StyleSheet } from 'react-native';
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
+
     // 메인 컨테이너 스타일 - ChatScreen 컴포넌트의 최상위 컨테이너에서 사용
     container: {
         flex: 1,
@@ -12,9 +13,9 @@ const styles = StyleSheet.create({
     // 상단 헤더 스타일 - ChatScreen의 BlurView 헤더에서 사용
     header: {
         paddingTop: Platform.OS === 'ios' ? 50 : 30,
-        paddingBottom: 16,
+        paddingBottom: 8,
         paddingHorizontal: 16,
-        backgroundColor: '#0022ff',
+        backgroundColor: '#f59a23',
     },
 
     // 헤더 내용 컨테이너 스타일 - 헤더 내부 레이아웃에서 사용
@@ -32,10 +33,10 @@ const styles = StyleSheet.create({
 
     // 앱 로고 스타일 - 'V' 문자가 들어가는 원형 로고에서 사용 (헤더와 사이드메뉴에서 사용)
     logo: {
-        width: 36,
-        height: 36,
-        borderRadius: 18,
-        backgroundColor: '#fff',
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        backgroundColor: '#ffedd0',
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: 10,
@@ -44,6 +45,12 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 4,
         elevation: 3,
+    },
+
+    logoSize: {
+        width: 31,
+        height: 31,
+        borderRadius: 50
     },
 
     // 로고 텍스트 스타일 - 로고 내부의 'V' 문자 스타일
@@ -130,10 +137,10 @@ const styles = StyleSheet.create({
 
     // 프로필 이미지 플레이스홀더 스타일 - AI의 'V' 프로필 이미지 배경
     profileImagePlaceholder: {
-        width: 32,
-        height: 32,
-        borderRadius: 16,
-        backgroundColor: '#4A90E2',
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        backgroundColor: '#ffedd0',
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -149,7 +156,7 @@ const styles = StyleSheet.create({
     senderName: {
         fontSize: 12,
         fontWeight: '600',
-        color: '#4A90E2',
+        color: '#a35c00',
     },
 
     // 메시지 컨테이너 스타일 - 실제 메시지 내용을 담는 말풍선 컨테이너 (renderMessage에서 사용)
@@ -166,7 +173,7 @@ const styles = StyleSheet.create({
 
     // 사용자 메시지 스타일 - 사용자가 보낸 메시지의 말풍선 배경 (renderMessage에서 사용)
     userMessage: {
-        backgroundColor: '#007AFF',
+        backgroundColor: '#f59a23',
         borderBottomRightRadius: 4,
     },
 
@@ -220,7 +227,7 @@ const styles = StyleSheet.create({
     // 입력 컨테이너 스타일 - 메시지 입력창과 버튼들을 담는 하단 컨테이너
     inputContainer: {
         flexDirection: 'row',
-        padding: 16,
+        padding: 10,
         borderTopWidth: 1,
         borderTopColor: '#e0e0e0',
         alignItems: 'flex-end',
@@ -254,7 +261,7 @@ const styles = StyleSheet.create({
 
     // 전송 버튼 스타일 - sendMessage 함수가 연결된 메시지 전송 버튼
     sendButton: {
-        backgroundColor: '#007AFF',
+        backgroundColor: '#F59A23',
         width: 44,
         height: 44,
         borderRadius: 22,
@@ -384,7 +391,7 @@ const styles = StyleSheet.create({
     menuHeaderTitle: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#0022ff',
+        color: '#A35C00',
         marginLeft: 12,
     },
 
@@ -427,7 +434,7 @@ const styles = StyleSheet.create({
     attachmentModalBackdrop: {
         flex: 1,
         backgroundColor: 'rgba(0, 0, 0, 0.4)',
-        justifyContent: 'flex-end',
+        // justifyContent: 'flex-end',
     },
 
     // 첨부 모달 컨테이너 스타일 - 파일 첨부 선택 모달의 컨테이너

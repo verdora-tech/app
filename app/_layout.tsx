@@ -9,7 +9,10 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+      PretendardGOV: require('../assets/fonts/PretendardGOVVariable.ttf'),
+      PretendardJP: require('../assets/fonts/PretendardJPVariable.ttf'),
+      PretendardStd: require('../assets/fonts/PretendardStdVariable.ttf'),
+
   });
 
   if (!loaded) {

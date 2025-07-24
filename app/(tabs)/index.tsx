@@ -1,9 +1,20 @@
-import React, {useEffect, useRef, useState} from 'react';
+import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
+import styles from '@/constants/style';
+import { Ionicons } from '@expo/vector-icons';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { BlurView } from 'expo-blur';
+import * as DocumentPicker from 'expo-document-picker';
+import * as Haptics from 'expo-haptics';
+// import { Image } from 'expo-image';
+import * as ImagePicker from 'expo-image-picker';
+import { useEffect, useRef, useState } from 'react';
 import {
     Alert,
     Animated,
     Dimensions,
     FlatList,
+    Image,
     KeyboardAvoidingView,
     Modal,
     Platform,
@@ -13,16 +24,6 @@ import {
     TouchableWithoutFeedback,
     View
 } from 'react-native';
-import {Image} from 'expo-image';
-import {Ionicons} from '@expo/vector-icons';
-import * as ImagePicker from 'expo-image-picker';
-import * as DocumentPicker from 'expo-document-picker';
-import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
-import {BlurView} from 'expo-blur';
-import * as Haptics from 'expo-haptics';
-import {ThemedText} from '@/components/ThemedText';
-import {ThemedView} from '@/components/ThemedView';
-import styles from '@/constants/style';
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
 
@@ -328,7 +329,7 @@ export default function ChatScreen() {
                                 <ThemedView style={{flex: 1}}>
                                     <View style={styles.menuHeaderContainer}>
                                         <View style={styles.logo}>
-                                            <ThemedText style={styles.logoText}>V</ThemedText>
+                                            <Image style={styles.logoSize} source={require('@/assets/images/icon.png')} />
                                         </View>
                                         <ThemedText style={styles.menuHeaderTitle}>Verdora</ThemedText>
                                     </View>
@@ -412,7 +413,8 @@ export default function ChatScreen() {
                 <View style={styles.aiProfileContainer}>
                     <View style={styles.profileImageContainer}>
                         <View style={styles.profileImagePlaceholder}>
-                            <ThemedText style={styles.profileInitial}>V</ThemedText>
+                            <Image style={styles.logoSize} source={require('@/assets/images/icon.png')} />
+
                         </View>
                     </View>
                     <ThemedText style={styles.senderName}>Verdora</ThemedText>
@@ -448,11 +450,12 @@ export default function ChatScreen() {
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             keyboardVerticalOffset={Platform.OS === 'ios' ? tabBarHeight : 0}
         >
-            <BlurView intensity={100} tint="light" style={styles.header}>
+            <BlurView intensity={0} tint="light" style={styles.header}>
                 <View style={styles.headerContent}>
                     <View style={styles.logoContainer}>
                         <View style={styles.logo}>
-                            <ThemedText style={styles.logoText}>V</ThemedText>
+                            <Image style={styles.logoSize} source={require('@/assets/images/icon.png')} />
+
                         </View>
                         <ThemedText style={styles.appName}>Verdora</ThemedText>
                     </View>
@@ -481,10 +484,10 @@ export default function ChatScreen() {
                     {renderAttachedFile(attachedFile)}
                 </BlurView>
             )}
-            <ThemedView style={[styles.inputContainer, {paddingBottom: tabBarHeight + 16}]}>
+            <ThemedView style={[styles.inputContainer]}>
                 <TouchableOpacity style={styles.attachButton} onPress={() => setAttachmentModalVisible(true)}
                                   hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}>
-                    <Ionicons name="add" size={24} color="#007AFF"/>
+                    <Ionicons name="add" size={24} color="#F59A23"/>
                 </TouchableOpacity>
                 <TextInput
                     style={styles.textInput}
@@ -509,6 +512,7 @@ export default function ChatScreen() {
                 visible={attachmentModalVisible}
                 animationType="slide"
                 transparent
+                statusBarTranslucent
                 onRequestClose={() => setAttachmentModalVisible(false)}
             >
                 <TouchableWithoutFeedback onPress={() => setAttachmentModalVisible(false)}>
@@ -519,19 +523,19 @@ export default function ChatScreen() {
                     <View style={styles.attachmentOptionsWrapper}>
                         <TouchableOpacity style={styles.attachmentOptionButton} onPress={pickCamera}>
                             <View style={styles.attachmentOptionIconContainer}>
-                                <Ionicons name="camera" size={32} color="#007AFF"/>
+                                <Ionicons name="camera" size={32} color="#F59A23"/>
                             </View>
                             <Text style={styles.attachmentOptionText}>카메라</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.attachmentOptionButton} onPress={pickGallery}>
                             <View style={styles.attachmentOptionIconContainer}>
-                                <Ionicons name="image" size={32} color="#007AFF"/>
+                                <Ionicons name="image" size={32} color="#F59A23"/>
                             </View>
                             <Text style={styles.attachmentOptionText}>갤러리</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.attachmentOptionButton} onPress={pickDocument}>
                             <View style={styles.attachmentOptionIconContainer}>
-                                <Ionicons name="document" size={32} color="#007AFF"/>
+                                <Ionicons name="document" size={32} color="#F59A23"/>
                             </View>
                             <Text style={styles.attachmentOptionText}>파일</Text>
                         </TouchableOpacity>
