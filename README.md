@@ -1,1 +1,5 @@
 # Verdora
+
+## Dev
+- bun
+- nodejs
