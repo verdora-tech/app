@@ -1,30 +1,30 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
+    Alert,
+    Animated,
+    Dimensions,
+    FlatList,
+    KeyboardAvoidingView,
+    Modal,
+    Platform,
+    Text,
     TextInput,
     TouchableOpacity,
-    FlatList,
-    View,
-    KeyboardAvoidingView,
-    Platform,
-    Alert,
-    Dimensions,
-    Modal,
-    Animated,
     TouchableWithoutFeedback,
-    Text
+    View
 } from 'react-native';
-import { Image } from 'expo-image';
-import { Ionicons } from '@expo/vector-icons';
+import {Image} from 'expo-image';
+import {Ionicons} from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { BlurView } from 'expo-blur';
+import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
+import {BlurView} from 'expo-blur';
 import * as Haptics from 'expo-haptics';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import {ThemedText} from '@/components/ThemedText';
+import {ThemedView} from '@/components/ThemedView';
 import styles from '@/constants/style';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const {width: SCREEN_WIDTH} = Dimensions.get('window');
 
 interface AttachedFile {
     id: string;
@@ -62,7 +62,8 @@ export default function ChatScreen() {
     const flatListRef = useRef<FlatList<Message>>(null);
 
     useEffect(() => {
-        setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
+        const timer = setTimeout(() => flatListRef.current?.scrollToEnd({animated: true}), 100);
+        return () => clearTimeout(timer); // 메모리 누수를 방지하기 위해 타이머 정리
     }, [messages]);
 
     const [isMenuVisible, setMenuVisible] = useState(false);
@@ -144,57 +145,46 @@ export default function ChatScreen() {
         }
     };
 
+    const handleFileSelection = async (result: any, type: 'image' | 'document') => {
+        if (!result.canceled && result.assets?.length) {
+            const asset = result.assets[0];
+            if (type === 'image' || ['.txt', '.md', '.pdf'].some(ext => asset.uri.endsWith(ext))) {
+                setAttachedFile({
+                    id: Date.now().toString(),
+                    uri: asset.uri,
+                    name: asset.fileName ?? (type === 'image' ? 'image.jpg' : 'document'),
+                    type,
+                    size: asset.fileSize ?? 0,
+                    mimeType: asset.type ?? (type === 'image' ? 'image/jpeg' : 'application/octet-stream'),
+                });
+            } else {
+                console.warn('Only .txt, .md, .pdf files are allowed.');
+            }
+        }
+    };
+
     const pickCamera = async () => {
         setAttachmentModalVisible(false);
-        const result = await ImagePicker.launchCameraAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, quality: 0.8 });
-        if (!result.canceled && result.assets?.length) {
-            const asset = result.assets[0];
-            if (['.txt', '.md', '.pdf'].some(ext => asset.uri.endsWith(ext))) {
-                setAttachedFile({
-                    id: Date.now().toString(),
-                    uri: asset.uri,
-                    name: asset.fileName ?? 'camera.jpg',
-                    type: 'image',
-                    size: asset.fileSize ?? 0,
-                    mimeType: asset.type ?? 'image/jpeg',
-                });
-            } else {
-                console.warn('Only .txt, .md, .pdf files are allowed.');
-            }
-        }
+        const result = await ImagePicker.launchCameraAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            quality: 0.8
+        });
+        await handleFileSelection(result, 'image');
     };
+
     const pickGallery = async () => {
         setAttachmentModalVisible(false);
-        const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, quality: 0.8 });
-        if (!result.canceled && result.assets?.length) {
-            const asset = result.assets[0];
-            if (['.txt', '.md', '.pdf'].some(ext => asset.uri.endsWith(ext))) {
-                setAttachedFile({
-                    id: Date.now().toString(),
-                    uri: asset.uri,
-                    name: asset.fileName ?? 'gallery.jpg',
-                    type: 'image',
-                    size: asset.fileSize ?? 0,
-                    mimeType: asset.type ?? 'image/jpeg',
-                });
-            } else {
-                console.warn('Only .txt, .md, .pdf files are allowed.');
-            }
-        }
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            quality: 0.8
+        });
+        await handleFileSelection(result, 'image');
     };
+
     const pickDocument = async () => {
         setAttachmentModalVisible(false);
-        const result = await DocumentPicker.getDocumentAsync({ copyToCacheDirectory: true });
-        if (result.type === 'success') {
-            setAttachedFile({
-                id: Date.now().toString(),
-                uri: result.uri,
-                name: result.name,
-                type: 'document',
-                size: result.size ?? 0,
-                mimeType: result.mimeType ?? 'application/octet-stream',
-            });
-        }
+        const result = await DocumentPicker.getDocumentAsync({copyToCacheDirectory: true});
+        await handleFileSelection(result, 'document');
     };
 
     const removeFile = async () => {
@@ -211,7 +201,7 @@ export default function ChatScreen() {
 
     const showGuide = async () => {
         await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        Alert.alert('사용법', '• Verdora와 자유롭게 대화하세요\n• 질문을 입력하고 전송 버튼을 누르세요\n• + 버튼으로 파일을 첨부할 수 있습니다\n• AI가 자동으로 응답해드립니다', [{ text: '확인' }]);
+        Alert.alert('사용법', '• Verdora와 자유롭게 대화하세요\n• 질문을 입력하고 전송 버튼을 누르세요\n• + 버튼으로 파일을 첨부할 수 있습니다\n• AI가 자동으로 응답해드립니다', [{text: '확인'}]);
     };
 
     const handleMenuPress = async () => {
@@ -254,7 +244,7 @@ export default function ChatScreen() {
                                     }]);
                                 },
                             },
-                            { text: '취소', style: 'cancel' },
+                            {text: '취소', style: 'cancel'},
                         ]
                     );
                     break;
@@ -264,36 +254,41 @@ export default function ChatScreen() {
 
     const renderSideMenu = () => {
         const menuItems = [
-            { key: 'country', icon: 'globe-outline', text: '나라 설정' },
-            { key: 'language', icon: 'language-outline', text: '언어 설정' },
-            { key: 'travel', icon: 'alert-circle-outline', text: '타국 여행시 주의점' },
-            { key: 'cases', icon: 'book-outline', text: '관련 사례' },
+            {key: 'country', icon: 'globe-outline', text: '나라 설정'},
+            {key: 'language', icon: 'language-outline', text: '언어 설정'},
+            {key: 'travel', icon: 'alert-circle-outline', text: '타국 여행시 주의점'},
+            {key: 'cases', icon: 'book-outline', text: '관련 사례'},
         ];
         return (
             <Modal transparent visible={isMenuVisible} onRequestClose={closeMenu} animationType="fade">
                 <TouchableWithoutFeedback onPress={closeMenu}>
                     <View style={styles.menuBackdrop}>
-                        <Animated.View style={[styles.menuDrawer, { transform: [{ translateX: slideAnim }] }]}>
+                        <Animated.View style={[styles.menuDrawer, {transform: [{translateX: slideAnim}]}]}>
                             <TouchableWithoutFeedback>
-                                <ThemedView style={{ flex: 1 }}>
+                                <ThemedView style={{flex: 1}}>
                                     <View style={styles.menuHeaderContainer}>
                                         <View style={styles.logo}>
                                             <ThemedText style={styles.logoText}>V</ThemedText>
                                         </View>
                                         <ThemedText style={styles.menuHeaderTitle}>Verdora</ThemedText>
                                     </View>
-                                    <View style={styles.menuSeparator} />
+                                    <View style={styles.menuSeparator}/>
                                     {menuItems.map(item => (
-                                        <TouchableOpacity key={item.key} style={styles.menuItem} onPress={() => handleMenuItemPress(item.key)}>
-                                            <Ionicons name={item.icon as any} size={22} color="#555" style={styles.menuItemIcon} />
+                                        <TouchableOpacity key={item.key} style={styles.menuItem}
+                                                          onPress={() => handleMenuItemPress(item.key)}>
+                                            <Ionicons name={item.icon as any} size={22} color="#555"
+                                                      style={styles.menuItemIcon}/>
                                             <ThemedText style={styles.menuItemText}>{item.text}</ThemedText>
                                         </TouchableOpacity>
                                     ))}
                                     <View style={styles.menuFooter}>
-                                        <View style={styles.menuSeparator} />
-                                        <TouchableOpacity style={styles.menuItem} onPress={() => handleMenuItemPress('delete')}>
-                                            <Ionicons name="trash-outline" size={22} color="#ff4444" style={styles.menuItemIcon} />
-                                            <ThemedText style={[styles.menuItemText, { color: '#ff4444' }]}>채팅 기록 삭제</ThemedText>
+                                        <View style={styles.menuSeparator}/>
+                                        <TouchableOpacity style={styles.menuItem}
+                                                          onPress={() => handleMenuItemPress('delete')}>
+                                            <Ionicons name="trash-outline" size={22} color="#ff4444"
+                                                      style={styles.menuItemIcon}/>
+                                            <ThemedText style={[styles.menuItemText, {color: '#ff4444'}]}>채팅 기록
+                                                삭제</ThemedText>
                                         </TouchableOpacity>
                                     </View>
                                 </ThemedView>
@@ -309,25 +304,27 @@ export default function ChatScreen() {
         <View style={[styles.attachedFileContainer, inMsg && styles.attachedFileInMessage]}>
             {file.type === 'image' ? (
                 <View style={styles.attachedImageContainer}>
-                    <Image source={{ uri: file.uri }} style={styles.attachedImage} contentFit="cover" transition={200} />
+                    <Image source={{uri: file.uri}} style={styles.attachedImage} contentFit="cover" transition={200}/>
                     {!inMsg && (
-                        <TouchableOpacity style={styles.removeFileButton} onPress={removeFile} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-                            <Ionicons name="close-circle" size={20} color="#ff4444" />
+                        <TouchableOpacity style={styles.removeFileButton} onPress={removeFile}
+                                          hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
+                            <Ionicons name="close-circle" size={20} color="#ff4444"/>
                         </TouchableOpacity>
                     )}
                 </View>
             ) : (
                 <View style={styles.attachedDocumentContainer}>
                     <View style={styles.documentIconContainer}>
-                        <Ionicons name="document-text" size={24} color="#666" />
+                        <Ionicons name="document-text" size={24} color="#666"/>
                     </View>
                     <View style={styles.documentInfo}>
                         <ThemedText style={styles.documentName} numberOfLines={1}>{file.name}</ThemedText>
                         {file.size && <ThemedText style={styles.documentSize}>{formatSize(file.size)}</ThemedText>}
                     </View>
                     {!inMsg && (
-                        <TouchableOpacity style={styles.removeFileButton} onPress={removeFile} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-                            <Ionicons name="close-circle" size={20} color="#ff4444" />
+                        <TouchableOpacity style={styles.removeFileButton} onPress={removeFile}
+                                          hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
+                            <Ionicons name="close-circle" size={20} color="#ff4444"/>
                         </TouchableOpacity>
                     )}
                 </View>
@@ -335,7 +332,7 @@ export default function ChatScreen() {
         </View>
     );
 
-    const renderMessage = ({ item }: { item: Message }) => (
+    const renderMessage = ({item}: { item: Message }) => (
         <View style={[
             styles.messageWrapper,
             item.isUser ? styles.userMessageWrapper : styles.aiMessageWrapper
@@ -368,7 +365,7 @@ export default function ChatScreen() {
                     styles.timestamp,
                     item.isUser ? styles.userTimestamp : styles.aiTimestamp
                 ]}>
-                    {item.timestamp.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
+                    {item.timestamp.toLocaleTimeString('ko-KR', {hour: '2-digit', minute: '2-digit'})}
                 </ThemedText>
             </View>
         </View>
@@ -393,7 +390,7 @@ export default function ChatScreen() {
                             <ThemedText style={styles.guideButtonText}>사용법</ThemedText>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.hamburgerButton} onPress={handleMenuPress}>
-                            <Ionicons name="menu" size={24} color="#fff" />
+                            <Ionicons name="menu" size={24} color="#fff"/>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -413,9 +410,10 @@ export default function ChatScreen() {
                     {renderAttachedFile(attachedFile)}
                 </BlurView>
             )}
-            <ThemedView style={[styles.inputContainer, { paddingBottom: tabBarHeight + 16 }]}>
-                <TouchableOpacity style={styles.attachButton} onPress={() => setAttachmentModalVisible(true)} hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}>
-                    <Ionicons name="add" size={24} color="#007AFF" />
+            <ThemedView style={[styles.inputContainer, {paddingBottom: tabBarHeight + 16}]}>
+                <TouchableOpacity style={styles.attachButton} onPress={() => setAttachmentModalVisible(true)}
+                                  hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}>
+                    <Ionicons name="add" size={24} color="#007AFF"/>
                 </TouchableOpacity>
                 <TextInput
                     style={styles.textInput}
@@ -428,12 +426,12 @@ export default function ChatScreen() {
                     returnKeyType="send"
                 />
                 <TouchableOpacity
-                    style={[styles.sendButton, { opacity: (inputText.trim() || attachedFile) ? 1 : 0.5 }]}
+                    style={[styles.sendButton, {opacity: (inputText.trim() || attachedFile) ? 1 : 0.5}]}
                     onPress={sendMessage}
                     disabled={!inputText.trim() && !attachedFile}
-                    hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
+                    hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}
                 >
-                    <Ionicons name="send" size={20} color="#fff" />
+                    <Ionicons name="send" size={20} color="#fff"/>
                 </TouchableOpacity>
             </ThemedView>
             <Modal
@@ -443,26 +441,26 @@ export default function ChatScreen() {
                 onRequestClose={() => setAttachmentModalVisible(false)}
             >
                 <TouchableWithoutFeedback onPress={() => setAttachmentModalVisible(false)}>
-                    <View style={styles.attachmentModalBackdrop} />
+                    <View style={styles.attachmentModalBackdrop}/>
                 </TouchableWithoutFeedback>
                 <View style={styles.attachmentModalContainer}>
                     <Text style={styles.attachmentModalTitle}>첨부파일 선택</Text>
                     <View style={styles.attachmentOptionsWrapper}>
                         <TouchableOpacity style={styles.attachmentOptionButton} onPress={pickCamera}>
                             <View style={styles.attachmentOptionIconContainer}>
-                                <Ionicons name="camera" size={32} color="#007AFF" />
+                                <Ionicons name="camera" size={32} color="#007AFF"/>
                             </View>
                             <Text style={styles.attachmentOptionText}>카메라</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.attachmentOptionButton} onPress={pickGallery}>
                             <View style={styles.attachmentOptionIconContainer}>
-                                <Ionicons name="image" size={32} color="#007AFF" />
+                                <Ionicons name="image" size={32} color="#007AFF"/>
                             </View>
                             <Text style={styles.attachmentOptionText}>갤러리</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.attachmentOptionButton} onPress={pickDocument}>
                             <View style={styles.attachmentOptionIconContainer}>
-                                <Ionicons name="document" size={32} color="#007AFF" />
+                                <Ionicons name="document" size={32} color="#007AFF"/>
                             </View>
                             <Text style={styles.attachmentOptionText}>파일</Text>
                         </TouchableOpacity>
