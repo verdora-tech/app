@@ -17,14 +17,11 @@ import {
     KeyboardAvoidingView,
     Modal,
     Platform,
-    Text,
     TextInput,
     TouchableOpacity,
     TouchableWithoutFeedback,
     View
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
 
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
@@ -201,7 +198,7 @@ export default function ChatScreen() {
         });
         await handleFileSelection(result, 'image');
     };
-    
+
     /**
      * 갤러리에서 이미지를 선택하는 함수
      * 첨부 모달을 닫고 이미지 라이브러리를 실행합니다
