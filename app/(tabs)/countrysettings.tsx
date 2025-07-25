@@ -47,6 +47,10 @@ export default function CountrySettingsScreen() {
 
     // 설정 저장하기
     const saveSettings = async () => {
+        if (homeCountry === foreignCountry) {
+            Alert.alert('저장 실패', '자국과 타국의 위치가 같습니다.');
+            return;
+        }
         try {
             await AsyncStorage.setItem('homeCountry', homeCountry);
             await AsyncStorage.setItem('foreignCountry', foreignCountry);
@@ -149,7 +153,7 @@ export default function CountrySettingsScreen() {
                         • 자국: 현재 거주하고 있는 국가를 선택하세요
                     </ThemedText>
                     <ThemedText style={styles.infoText}>
-                        • 타국: 관심 있는 해외 국가를 선택하세요
+                        • 타국: 여행 왔거나 관심 있는 해외 국가를 선택하세요
                     </ThemedText>
                     <ThemedText style={styles.infoText}>
                         • 설정된 국가에 따라 맞춤형 콘텐츠가 제공됩니다
@@ -176,6 +180,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'white',
+        paddingTop: 70,
     },
     scrollView: {
         flex: 1,
@@ -212,9 +217,9 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         padding: 16,
         borderRadius: 12,
-        backgroundColor: 'rgba(0, 122, 255, 0.1)',
+        backgroundColor: '#ffedd0',
         borderWidth: 1,
-        borderColor: 'rgba(0, 122, 255, 0.2)',
+        borderColor: 'rgba(0, 0, 0, 0.2)',
     },
     selectedCountry: {
         flexDirection: 'row',
@@ -230,7 +235,7 @@ const styles = StyleSheet.create({
         fontWeight: '500',
     },
     saveButton: {
-        backgroundColor: '#007AFF',
+        backgroundColor: '#f59a23',
         padding: 16,
         borderRadius: 12,
         alignItems: 'center',
@@ -255,6 +260,7 @@ const styles = StyleSheet.create({
         opacity: 0.8,
     },
     pickerContainer: {
+        height: '100%',
         position: 'absolute',
         top: 0,
         left: 0,
@@ -278,7 +284,7 @@ const styles = StyleSheet.create({
         borderBottomColor: 'rgba(0, 0, 0, 0.1)',
     },
     selectedOption: {
-        backgroundColor: 'rgba(0, 122, 255, 0.1)',
+        backgroundColor: '#ffedd0',
     },
     flag: {
         fontSize: 24,
@@ -290,7 +296,7 @@ const styles = StyleSheet.create({
         color: 'black',
     },
     closeButton: {
-        backgroundColor: '#007AFF',
+        backgroundColor: '#f59a23',
         padding: 16,
         borderRadius: 12,
         alignItems: 'center',
