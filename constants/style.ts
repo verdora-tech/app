@@ -325,6 +325,7 @@ const styles = StyleSheet.create({
     // 문서 정보 컨테이너 스타일 - 문서 이름과 크기 정보를 담는 컨테이너
     documentInfo: {
         flex: 1,
+        minWidth: 0,
     },
 
     // 문서 이름 스타일 - 첨부된 문서의 파일명 표시 (formatSize 함수와 함께 사용)

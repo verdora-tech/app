@@ -23,6 +23,9 @@ import {
     TouchableWithoutFeedback,
     View
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
 
@@ -380,12 +383,13 @@ export default function ChatScreen() {
                     )}
                 </View>
             ) : (
-                <View style={styles.attachedDocumentContainer}>
+                <View style={[styles.attachedDocumentContainer, {flexDirection: 'row', alignItems: 'center'}]}>
                     <View style={styles.documentIconContainer}>
                         <Ionicons name="document-text" size={24} color="#666"/>
                     </View>
-                    <View style={styles.documentInfo}>
-                        <ThemedText style={styles.documentName} numberOfLines={1}>{file.name}</ThemedText>
+                    <View style={[styles.documentInfo, {flex: 1, minWidth: 0, marginHorizontal: 8}]}>
+                        <ThemedText style={styles.documentName} numberOfLines={1}
+                                    ellipsizeMode="tail">{file.name}</ThemedText>
                         {file.size && <ThemedText style={styles.documentSize}>{formatSize(file.size)}</ThemedText>}
                     </View>
                     {!inMsg && (
@@ -509,38 +513,94 @@ export default function ChatScreen() {
                 </TouchableOpacity>
             </ThemedView>
             <Modal
-                visible={attachmentModalVisible}
-                animationType="slide"
-                transparent
                 statusBarTranslucent
-                onRequestClose={() => setAttachmentModalVisible(false)}
-            >
+                animationType="slide"
+                transparent={true}
+                visible={attachmentModalVisible}
+                onRequestClose={() => setAttachmentModalVisible(false)}>
                 <TouchableWithoutFeedback onPress={() => setAttachmentModalVisible(false)}>
-                    <View style={styles.attachmentModalBackdrop}/>
-                </TouchableWithoutFeedback>
-                <View style={styles.attachmentModalContainer}>
-                    <Text style={styles.attachmentModalTitle}>첨부파일 선택</Text>
-                    <View style={styles.attachmentOptionsWrapper}>
-                        <TouchableOpacity style={styles.attachmentOptionButton} onPress={pickCamera}>
-                            <View style={styles.attachmentOptionIconContainer}>
-                                <Ionicons name="camera" size={32} color="#F59A23"/>
-                            </View>
-                            <Text style={styles.attachmentOptionText}>카메라</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.attachmentOptionButton} onPress={pickGallery}>
-                            <View style={styles.attachmentOptionIconContainer}>
-                                <Ionicons name="image" size={32} color="#F59A23"/>
-                            </View>
-                            <Text style={styles.attachmentOptionText}>갤러리</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.attachmentOptionButton} onPress={pickDocument}>
-                            <View style={styles.attachmentOptionIconContainer}>
-                                <Ionicons name="document" size={32} color="#F59A23"/>
-                            </View>
-                            <Text style={styles.attachmentOptionText}>파일</Text>
-                        </TouchableOpacity>
+                    <View style={{
+                        position: 'absolute',
+                        top: 0,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        justifyContent: 'flex-end',
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+
+                    }}>
+                        <TouchableWithoutFeedback>
+                            <ThemedView style={{
+                                paddingTop: 20, // 상단 여백
+                                paddingBottom: 65, // 하단 여백
+                                paddingHorizontal: 20, // 좌우 여백
+                                borderTopLeftRadius: 20,
+                                borderTopRightRadius: 20,
+                            }}>
+                                {/* "첨부파일 선택" 제목 */}
+                                <ThemedText style={{
+                                    fontSize: 16,
+                                    fontWeight: 'bold',
+                                    textAlign: 'center',
+                                    marginBottom: 25, // 제목과 아이콘 사이의 간격
+                                }}>
+                                    첨부파일 선택
+                                </ThemedText>
+
+                                {/* 아이콘 버튼들을 담는 컨테이너 */}
+                                <View style={{flexDirection: 'row'}}>
+                                    {/* 카메라 버튼 */}
+                                    <TouchableOpacity onPress={pickCamera} style={{flex: 1, alignItems: 'center'}}>
+                                        <View style={{
+                                            width: 60,
+                                            height: 60,
+                                            borderRadius: 30,
+                                            borderWidth: 2,
+                                            borderColor: '#f59a23',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                        }}>
+                                            <Ionicons name="camera-outline" size={30} color="#f59a23"/>
+                                        </View>
+                                        <ThemedText style={{marginTop: 8, fontSize: 13}}>카메라</ThemedText>
+                                    </TouchableOpacity>
+
+                                    {/* 갤러리 버튼 */}
+                                    <TouchableOpacity onPress={pickGallery} style={{flex: 1, alignItems: 'center'}}>
+                                        <View style={{
+                                            width: 60,
+                                            height: 60,
+                                            borderRadius: 30,
+                                            borderWidth: 2,
+                                            borderColor: '#f59a23',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                        }}>
+                                            <Ionicons name="image-outline" size={30} color="#f59a23"/>
+                                        </View>
+                                        <ThemedText style={{marginTop: 8, fontSize: 13}}>갤러리</ThemedText>
+                                    </TouchableOpacity>
+
+                                    {/* 파일 버튼 */}
+                                    <TouchableOpacity onPress={pickDocument} style={{flex: 1, alignItems: 'center'}}>
+                                        <View style={{
+                                            width: 60,
+                                            height: 60,
+                                            borderRadius: 30,
+                                            borderWidth: 2,
+                                            borderColor: '#f59a23',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                        }}>
+                                            <Ionicons name="document-outline" size={30} color="#f59a23"/>
+                                        </View>
+                                        <ThemedText style={{marginTop: 8, fontSize: 13}}>파일</ThemedText>
+                                    </TouchableOpacity>
+                                </View>
+                            </ThemedView>
+                        </TouchableWithoutFeedback>
                     </View>
-                </View>
+                </TouchableWithoutFeedback>
             </Modal>
             {renderSideMenu()}
         </KeyboardAvoidingView>
