@@ -23,6 +23,7 @@ import {
     TouchableWithoutFeedback,
     View
 } from 'react-native';
+import {router} from 'expo-router';
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
 
@@ -270,7 +271,7 @@ export default function ChatScreen() {
         setTimeout(() => {
             switch (key) {
                 case 'country':
-                    Alert.alert('알림', '나라 설정 기능은 준비 중입니다.');
+                    router.push('/countrysettings');
                     break;
                 case 'language':
                     Alert.alert('알림', '언어 설정 기능은 준비 중입니다.');
