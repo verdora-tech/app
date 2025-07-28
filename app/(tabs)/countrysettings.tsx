@@ -48,6 +48,10 @@ export default function CountrySettingsScreen() {
 
     // 설정 저장하기
     const saveSettings = async () => {
+        if (homeCountry === foreignCountry) {
+            Alert.alert('경고', '자국과 타국이 같습니다. 다시 선택해주세요 ㅅㅂ.');
+            return;
+        }
         try {
             await AsyncStorage.setItem('homeCountry', homeCountry);
             await AsyncStorage.setItem('foreignCountry', foreignCountry);
