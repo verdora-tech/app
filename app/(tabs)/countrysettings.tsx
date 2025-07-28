@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         padding: 16,
-        paddingBottom: 32,
+        paddingBottom: 64,
     },
     titleContainer: {
         flexDirection: 'column',
@@ -213,9 +213,9 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         padding: 16,
         borderRadius: 12,
-        backgroundColor: 'rgba(0, 122, 255, 0.1)',
+        backgroundColor: '#ffedd0',
         borderWidth: 1,
-        borderColor: 'rgba(0, 122, 255, 0.2)',
+        borderColor: 'rgba(0, 0, 0, 0.2)',
     },
     selectedCountry: {
         flexDirection: 'row',
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
         fontWeight: '500',
     },
     saveButton: {
-        backgroundColor: '#007AFF',
+        backgroundColor: '#f59a23',
         padding: 16,
         borderRadius: 12,
         alignItems: 'center',
@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
         borderBottomColor: 'rgba(0, 0, 0, 0.1)',
     },
     selectedOption: {
-        backgroundColor: 'rgba(0, 122, 255, 0.1)',
+        backgroundColor: '#ffedd0',
     },
     flag: {
         fontSize: 24,
@@ -294,8 +294,9 @@ const styles = StyleSheet.create({
         color: 'black',
     },
     closeButton: {
-        backgroundColor: '#007AFF',
-        padding: 16,
+        backgroundColor: '#f59a23',
+        paddingVertical: 16,
+        paddingHorizontal: 100,
         borderRadius: 12,
         alignItems: 'center',
     },
