@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import { StatusBar, View } from 'react-native';
 import {ScrollView, StyleSheet, TouchableOpacity, Alert, SafeAreaView} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -95,7 +96,17 @@ export default function CountrySettingsScreen() {
     );
 
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
+            <StatusBar barStyle="light-content" backgroundColor="rgba(0,0,0,0.5)" translucent />
+            {(showHomeCountryPicker || showForeignCountryPicker) && (
+                renderCountryPicker(
+                    showHomeCountryPicker ? homeCountry : foreignCountry,
+                    showHomeCountryPicker ? setHomeCountry : setForeignCountry,
+                    showHomeCountryPicker
+                        ? () => setShowHomeCountryPicker(false)
+                        : () => setShowForeignCountryPicker(false)
+                )
+            )}
             <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
                 <ThemedView style={styles.titleContainer}>
                     <ThemedText type="title">국가 설정</ThemedText>
@@ -156,19 +167,8 @@ export default function CountrySettingsScreen() {
                     </ThemedText>
                 </ThemedView>
 
-                {showHomeCountryPicker && renderCountryPicker(
-                    homeCountry,
-                    setHomeCountry,
-                    () => setShowHomeCountryPicker(false)
-                )}
-
-                {showForeignCountryPicker && renderCountryPicker(
-                    foreignCountry,
-                    setForeignCountry,
-                    () => setShowForeignCountryPicker(false)
-                )}
             </ScrollView>
-        </SafeAreaView>
+        </View>
     );
 }
 
@@ -176,6 +176,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'white',
+        paddingTop: 80,
     },
     scrollView: {
         flex: 1,
@@ -260,11 +261,14 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // 회색 반투명
         justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 100,
         padding: 20,
     },
     pickerScroll: {
+        width: '100%', // 모바일 화면 가로 전체
         maxHeight: '70%',
         backgroundColor: 'white',
         borderRadius: 12,
